@@ -1,0 +1,75 @@
+digraph G {
+  rankdir = "RL";
+  node [shape = rect, fontname = "sans-serif"];
+  subgraph "cluster_module.azure_mssql_database" {
+    label = "module.azure_mssql_database"
+    fontname = "sans-serif"
+    "module.azure_mssql_database.data.azurerm_mssql_server.sqlserver" [label="data.azurerm_mssql_server.sqlserver"];
+    "module.azure_mssql_database.azurerm_mssql_database.sqldatabase" [label="azurerm_mssql_database.sqldatabase"];
+  }
+  subgraph "cluster_module.azure_mssql_sever" {
+    label = "module.azure_mssql_sever"
+    fontname = "sans-serif"
+    "module.azure_mssql_sever.data.azurerm_key_vault.G31-key-vault" [label="data.azurerm_key_vault.G31-key-vault"];
+    "module.azure_mssql_sever.data.azurerm_key_vault_secret.vishal-password" [label="data.azurerm_key_vault_secret.vishal-password"];
+    "module.azure_mssql_sever.data.azurerm_key_vault_secret.vishal-username" [label="data.azurerm_key_vault_secret.vishal-username"];
+    "module.azure_mssql_sever.azurerm_mssql_server.sqlserver" [label="azurerm_mssql_server.sqlserver"];
+  }
+  subgraph "cluster_module.azure_nic" {
+    label = "module.azure_nic"
+    fontname = "sans-serif"
+    "module.azure_nic.data.azurerm_public_ip.pip" [label="data.azurerm_public_ip.pip"];
+    "module.azure_nic.data.azurerm_subnet.subnet" [label="data.azurerm_subnet.subnet"];
+    "module.azure_nic.azurerm_network_interface.nic" [label="azurerm_network_interface.nic"];
+  }
+  subgraph "cluster_module.azure_pip" {
+    label = "module.azure_pip"
+    fontname = "sans-serif"
+    "module.azure_pip.azurerm_public_ip.pip" [label="azurerm_public_ip.pip"];
+  }
+  subgraph "cluster_module.azure_rg" {
+    label = "module.azure_rg"
+    fontname = "sans-serif"
+    "module.azure_rg.azurerm_resource_group.rg" [label="azurerm_resource_group.rg"];
+  }
+  subgraph "cluster_module.azure_subnet" {
+    label = "module.azure_subnet"
+    fontname = "sans-serif"
+    "module.azure_subnet.azurerm_subnet.subnet" [label="azurerm_subnet.subnet"];
+  }
+  subgraph "cluster_module.azure_vm" {
+    label = "module.azure_vm"
+    fontname = "sans-serif"
+    "module.azure_vm.data.azurerm_key_vault.G31-key-vault" [label="data.azurerm_key_vault.G31-key-vault"];
+    "module.azure_vm.data.azurerm_key_vault_secret.vishal-password" [label="data.azurerm_key_vault_secret.vishal-password"];
+    "module.azure_vm.data.azurerm_key_vault_secret.vishal-username" [label="data.azurerm_key_vault_secret.vishal-username"];
+    "module.azure_vm.data.azurerm_network_interface.nic" [label="data.azurerm_network_interface.nic"];
+    "module.azure_vm.azurerm_linux_virtual_machine.vm" [label="azurerm_linux_virtual_machine.vm"];
+  }
+  subgraph "cluster_module.azure_vnet" {
+    label = "module.azure_vnet"
+    fontname = "sans-serif"
+    "module.azure_vnet.azurerm_virtual_network.vnet" [label="azurerm_virtual_network.vnet"];
+  }
+  "module.azure_mssql_database.data.azurerm_mssql_server.sqlserver" -> "module.azure_mssql_sever.azurerm_mssql_server.sqlserver";
+  "module.azure_mssql_database.azurerm_mssql_database.sqldatabase" -> "module.azure_mssql_database.data.azurerm_mssql_server.sqlserver";
+  "module.azure_mssql_sever.data.azurerm_key_vault.G31-key-vault" -> "module.azure_rg.azurerm_resource_group.rg";
+  "module.azure_mssql_sever.data.azurerm_key_vault_secret.vishal-password" -> "module.azure_mssql_sever.data.azurerm_key_vault.G31-key-vault";
+  "module.azure_mssql_sever.data.azurerm_key_vault_secret.vishal-username" -> "module.azure_mssql_sever.data.azurerm_key_vault.G31-key-vault";
+  "module.azure_mssql_sever.azurerm_mssql_server.sqlserver" -> "module.azure_mssql_sever.data.azurerm_key_vault_secret.vishal-password";
+  "module.azure_mssql_sever.azurerm_mssql_server.sqlserver" -> "module.azure_mssql_sever.data.azurerm_key_vault_secret.vishal-username";
+  "module.azure_nic.data.azurerm_public_ip.pip" -> "module.azure_subnet.azurerm_subnet.subnet";
+  "module.azure_nic.data.azurerm_subnet.subnet" -> "module.azure_subnet.azurerm_subnet.subnet";
+  "module.azure_nic.azurerm_network_interface.nic" -> "module.azure_nic.data.azurerm_public_ip.pip";
+  "module.azure_nic.azurerm_network_interface.nic" -> "module.azure_nic.data.azurerm_subnet.subnet";
+  "module.azure_pip.azurerm_public_ip.pip" -> "module.azure_rg.azurerm_resource_group.rg";
+  "module.azure_subnet.azurerm_subnet.subnet" -> "module.azure_vnet.azurerm_virtual_network.vnet";
+  "module.azure_vm.data.azurerm_key_vault.G31-key-vault" -> "module.azure_nic.azurerm_network_interface.nic";
+  "module.azure_vm.data.azurerm_key_vault_secret.vishal-password" -> "module.azure_vm.data.azurerm_key_vault.G31-key-vault";
+  "module.azure_vm.data.azurerm_key_vault_secret.vishal-username" -> "module.azure_vm.data.azurerm_key_vault.G31-key-vault";
+  "module.azure_vm.data.azurerm_network_interface.nic" -> "module.azure_nic.azurerm_network_interface.nic";
+  "module.azure_vm.azurerm_linux_virtual_machine.vm" -> "module.azure_vm.data.azurerm_key_vault_secret.vishal-password";
+  "module.azure_vm.azurerm_linux_virtual_machine.vm" -> "module.azure_vm.data.azurerm_key_vault_secret.vishal-username";
+  "module.azure_vm.azurerm_linux_virtual_machine.vm" -> "module.azure_vm.data.azurerm_network_interface.nic";
+  "module.azure_vnet.azurerm_virtual_network.vnet" -> "module.azure_rg.azurerm_resource_group.rg";
+}
